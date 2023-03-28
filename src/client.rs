@@ -102,10 +102,13 @@ impl Client {
     /// See [ErrorReason](enum.ErrorReason.html) for possible errors.
     #[cfg_attr(feature = "tracing", ::tracing::instrument)]
     pub async fn send(&self, payload: Payload<'_>) -> Result<Response, Error> {
+        println!("ONE");
         let request = self.build_request(payload);
+        println!("TWO");
         let requesting = self.http_client.request(request);
-
+        println!("THREE");
         let response = requesting.await?;
+        println!("FOUR");
 
         let apns_id = response
             .headers()
@@ -113,6 +116,7 @@ impl Client {
             .and_then(|s| s.to_str().ok())
             .map(String::from);
 
+        println!("FIVE");
         match response.status() {
             StatusCode::OK => Ok(Response {
                 apns_id,
